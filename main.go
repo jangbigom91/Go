@@ -25,6 +25,29 @@ func lenAndUppercase(name string) (lenght int, uppercase string) {
 	return
 } // return 값을 미리 정해주면 return 값 뒤에 따로 명시할 필요는 없다. -> naked return
 
+// 반복문 for
+func superAdd(numbers ...int) int {
+	/*
+		for index, number := range numbers {
+			fmt.Println(index, number)
+		}
+		return 1
+	*/ // range는 index값을 의미한다. range는 for안에서만 사용가능
+
+	/*
+		for i := 0; i < len(numbers); i++ {
+			fmt.Println(numbers[i])
+		}
+		return 1
+	*/
+
+	total := 0
+	for _, number := range numbers {
+		total += number
+	}
+	return total
+}
+
 func main() {
 	fmt.Println("Hello Golang!!!")
 	/*
@@ -58,4 +81,8 @@ func main() {
 	totalLenght, up := lenAndUppercase("nico")
 	fmt.Println(totalLenght, up)
 
+	// superAdd(1, 2, 3, 4, 5, 6)
+
+	result := superAdd(1, 2, 3, 4, 5, 6, 7, 8)
+	fmt.Println(result)
 }
