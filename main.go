@@ -48,6 +48,26 @@ func superAdd(numbers ...int) int {
 	return total
 }
 
+// if
+func canIDrink(age int) bool {
+	if koreanAge := age + 2; koreanAge < 18 {
+		return false
+	}
+	return true // else부분을 굳이 쓰지 않고 return 할수 있고, Go는 if안에 다른변수를 넣어서 조건을 만들수 있다.
+}
+
+// Switch
+func canIDrive(age int) bool {
+	switch koreanAge := age + 2; koreanAge {
+	case 10:
+		return false
+	case 18:
+		return true
+	}
+	return false // switch도 if와 마찬가지로 변수를 넣어서 조건을 지정할수 있다.
+	// if~elseif... elseif... -> switch와 같은 의미
+}
+
 func main() {
 	fmt.Println("Hello Golang!!!")
 	/*
@@ -85,4 +105,10 @@ func main() {
 
 	result := superAdd(1, 2, 3, 4, 5, 6, 7, 8)
 	fmt.Println(result)
+
+	// if
+	fmt.Println(canIDrink(16))
+
+	// switch
+	fmt.Println(canIDrive(16))
 }
