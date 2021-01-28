@@ -5,6 +5,13 @@ import (
 	"strings"
 )
 
+// struct
+type person struct {
+	name    string
+	age     int
+	favFood []string
+}
+
 func multiply(a, b int) int {
 	return a * b
 }
@@ -134,8 +141,15 @@ func main() {
 	fmt.Println(names)
 
 	// map
-	nico := map[string]string{"name": "nico", "age": "12"} // key, value
-	for key, value := range nico {
-		fmt.Println(key, value)
-	}
+	/*
+		nico := map[string]string{"name": "nico", "age": "12"} // key, value
+		for key, value := range nico {
+			fmt.Println(key, value)
+		}
+	*/
+
+	// struct
+	favFood := []string{"kimchi", "ramen"}
+	nico := person{name: "nico", age: 18, favFood: favFood}
+	fmt.Println(nico)
 }
