@@ -121,4 +121,16 @@ func main() {
 	fmt.Println(a) // a와b는 연결되어있기 때문에, *b의 값을 변경해주면 a의 값도 변경됨(20)
 	// & -> 메모리 주소확인
 	// * -> 주소를 살펴보고 주소에 담긴 값을 확인, 주소에 *를 써서 주소에 담긴 값도 변경할 수 있다
+
+	// Array(배열)
+	//names := [5]string{"nico", "anna", "coke"}
+	//names[3] = "jisu"
+	//names[4] = "rose"
+	//fmt.Println(names)
+
+	// Go에서 Array 크기에 제한을 주고 싶거나, 제한이 없게 하고 싶으면 []로 표시 -> Slice기능
+	names := []string{"nico", "anna", "coke"}
+	names = append(names, "jisu") // Slice한 배열에 append로 names의 배열에 값을 추가,수정할수 있다.
+	fmt.Println(names)
+
 }
