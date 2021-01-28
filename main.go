@@ -133,4 +133,9 @@ func main() {
 	names = append(names, "jisu") // Slice한 배열에 append로 names의 배열에 값을 추가,수정할수 있다.
 	fmt.Println(names)
 
+	// map
+	nico := map[string]string{"name": "nico", "age": "12"} // key, value
+	for key, value := range nico {
+		fmt.Println(key, value)
+	}
 }
