@@ -12,6 +12,18 @@ type person struct {
 	favFood []string
 }
 
+// Account struct
+type Account struct {
+	owner   string // 소문자로 표시 -> private
+	balance int    // 소문자로 표시 -> private
+}
+
+// NewAccount creates Account
+func NewAccount(owner string) *Account {
+	account := Account{owner: owner, balance: 0}
+	return &account
+}
+
 func multiply(a, b int) int {
 	return a * b
 }
@@ -152,4 +164,9 @@ func main() {
 	favFood := []string{"kimchi", "ramen"}
 	nico := person{name: "nico", age: 18, favFood: favFood}
 	fmt.Println(nico)
+
+	// BankAccount Project
+	account := accounts.NewAccount("nico")
+	fmt.Println(account)
+
 }
