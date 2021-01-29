@@ -13,7 +13,9 @@ type person struct {
 	favFood []string
 }
 
-// Account struct
+/********************BankAccount Project********************/
+
+// Account struct 생성
 type Account struct {
 	owner   string // 소문자로 표시 -> private
 	balance int    // 소문자로 표시 -> private
@@ -48,6 +50,23 @@ func (a *Account) Withdraw(amount int) error {
 	a.balance -= amount
 	return nil
 }
+
+// ChangeOwner of the account
+func (a *Account) ChangeOwner(newOwner string) {
+	a.owner = newOwner
+}
+
+// Owner of the account
+func (a Account) Owner() string {
+	return a.owner
+}
+
+// Go에서 자동으로 호출해주는 Method인 String
+func (a Account) String() string {
+	return fmt.Sprint(a.Owner(), "'s account.\nHas: ", a.Balance())
+}
+
+/******************** BankAccount Project - END ********************/
 
 func multiply(a, b int) int {
 	return a * b
@@ -198,6 +217,6 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println(account.Balance())
+	fmt.Println(account.Balance(), account.Owner())
 
 }
