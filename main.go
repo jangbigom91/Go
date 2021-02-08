@@ -73,6 +73,7 @@ func (a Account) String() string {
 type Dictionary map[string]string
 
 var errNotFound = errors.New("Not Found")
+var errCantUpdate = errors.New("Cant update non-existing word")
 var errWordExists = errors.New("That word already exists")
 
 // Search for a word
@@ -94,6 +95,23 @@ func (d Dictionary) Add(word, def string) error {
 		return errWordExists
 	}
 	return nil
+}
+
+// Update a word
+func (d Dictionary) Update(word, definition string) error {
+	_, err := d.Search(word)
+	switch err {
+	case nil:
+		d[word] = definition
+	case errNotFound:
+		return errCantUpdate
+	}
+	return nil
+}
+
+// Delete a word
+func (d Dictionary) Delete(word string) {
+	delete(d, word)
 }
 
 /******************** Dictionary Project - END ********************/
@@ -273,6 +291,28 @@ func main() {
 	err3 := dictionary.Add(word, definition2)
 	if err3 != nil {
 		fmt.Println(err3)
+	}
+
+	// Update a word
+	baseWord := "hi"
+	dictionary.Add(baseWord, "First")
+	err4 := dictionary.Update(baseWord, "Second")
+	if err4 != nil {
+		fmt.Println(err4)
+	}
+	word1, _ := dictionary.Search(baseWord)
+	fmt.Println(word1)
+
+	// Delete a word
+	baseWord2 := "bye"
+	dictionary.Add(baseWord2, "First")
+	dictionary.Search(baseWord2)
+	dictionary.Delete(baseWord2)
+	word, err5 := dictionary.Search(baseWord2)
+	if err5 != nil {
+		fmt.Println(err5)
+	} else {
+		fmt.Println(word)
 	}
 
 }
