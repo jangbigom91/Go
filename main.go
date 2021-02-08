@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"net/http"
 	"strings"
 )
 
@@ -115,6 +116,21 @@ func (d Dictionary) Delete(word string) {
 }
 
 /******************** Dictionary Project - END ********************/
+
+/********************URL checker Project********************/
+var errRequestFailed = errors.New("Request failed")
+
+// URL CHECKER hitURL
+func hitURL(url string) error {
+	fmt.Println("Checking:", url)
+	resp, err := http.Get(url)
+	if err == nil || resp.StatusCode >= 400 {
+		return errRequestFailed
+	}
+	return nil
+}
+
+/******************** URL checker Project - END ********************/
 
 func multiply(a, b int) int {
 	return a * b
@@ -268,7 +284,6 @@ func main() {
 	fmt.Println(account.Balance(), account.Owner())
 
 	// Dictionary Project
-
 	// Search for a word
 	dictionary := Dictionary{"first": "First word"}
 	definition, err := dictionary.Search("first")
@@ -315,4 +330,20 @@ func main() {
 		fmt.Println(word)
 	}
 
+	// URL checker Project
+	urls := []string{
+		"https://www.airbnb.com/",
+		"https://www.google.com/",
+		"https://www.amazon.com/",
+		"https://www.reddit.com/",
+		"https://www.google.com/",
+		"https://www.facebook.com/",
+		"https://www.instagram.com/",
+		"https://soundcloud.com/",
+		"https://academy.nomadcoders.co/",
+	}
+
+	for _, url := range urls {
+		hitURL(url)
+	}
 }
