@@ -4,8 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"strings"
-
-	"github.com/jangbigom91/LEARNGO/mydict"
 )
 
 // struct
@@ -73,6 +71,17 @@ func (a Account) String() string {
 /********************Dictionary Project********************/
 // Dictionary type
 type Dictionary map[string]string
+
+var errNotFound = errors.New("Not Found")
+
+// Search for a word
+func (d Dictionary) Search(word string) (string, error) {
+	value, exists := d[word]
+	if exists {
+		return value, nil
+	}
+	return "", errNotFound
+}
 
 /******************** Dictionary Project - END ********************/
 
@@ -218,7 +227,7 @@ func main() {
 	fmt.Println(nico)
 
 	// BankAccount Project
-	account := accounts.NewAccount("nico")
+	account := NewAccount("nico")
 	account.Deposit(10)
 	fmt.Println(account.Balance())
 	err := account.Withdraw(20)
@@ -228,6 +237,12 @@ func main() {
 	fmt.Println(account.Balance(), account.Owner())
 
 	// Dictionary Project
-	dictionary := mydict.Dictionary{}
+	dictionary := Dictionary{"first": "First word"}
+	definition, err := dictionary.Search("first")
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(definition)
+	}
 
 }
