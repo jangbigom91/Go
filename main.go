@@ -73,6 +73,7 @@ func (a Account) String() string {
 type Dictionary map[string]string
 
 var errNotFound = errors.New("Not Found")
+var errWordExists = errors.New("That word already exists")
 
 // Search for a word
 func (d Dictionary) Search(word string) (string, error) {
@@ -81,6 +82,18 @@ func (d Dictionary) Search(word string) (string, error) {
 		return value, nil
 	}
 	return "", errNotFound
+}
+
+// Add a word to the dictionary
+func (d Dictionary) Add(word, def string) error {
+	_, err := d.Search(word)
+	switch err {
+	case errNotFound:
+		d[word] = def
+	case nil:
+		return errWordExists
+	}
+	return nil
 }
 
 /******************** Dictionary Project - END ********************/
@@ -237,12 +250,29 @@ func main() {
 	fmt.Println(account.Balance(), account.Owner())
 
 	// Dictionary Project
+
+	// Search for a word
 	dictionary := Dictionary{"first": "First word"}
 	definition, err := dictionary.Search("first")
 	if err != nil {
 		fmt.Println(err)
 	} else {
 		fmt.Println(definition)
+	}
+
+	// Add a word to the dictionary
+	word := "hello"
+	definition2 := "Greeting"
+	err2 := dictionary.Add(word, definition2)
+	if err2 != nil {
+		fmt.Println(err2)
+	}
+
+	hello, _ := dictionary.Search(word)
+	fmt.Println("found", word, "definition:", hello)
+	err3 := dictionary.Add(word, definition2)
+	if err3 != nil {
+		fmt.Println(err3)
 	}
 
 }
