@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+
+	"github.com/jangbigom91/LEARNGO/mydict"
 )
 
 // struct
@@ -67,6 +69,12 @@ func (a Account) String() string {
 }
 
 /******************** BankAccount Project - END ********************/
+
+/********************Dictionary Project********************/
+// Dictionary type
+type Dictionary map[string]string
+
+/******************** Dictionary Project - END ********************/
 
 func multiply(a, b int) int {
 	return a * b
@@ -218,5 +226,8 @@ func main() {
 		fmt.Println(err)
 	}
 	fmt.Println(account.Balance(), account.Owner())
+
+	// Dictionary Project
+	dictionary := mydict.Dictionary{}
 
 }
