@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 )
 
 // struct
@@ -129,6 +130,14 @@ func hitURL(url string) error {
 		return errRequestFailed
 	}
 	return nil
+}
+
+// Goroutines - 동시에 처리해주는 go함수
+func sexyCount(person string) {
+	for i := 0; i < 10; i++ {
+		fmt.Println(person, "is sexy", i)
+		time.Sleep(time.Second)
+	}
 }
 
 /******************** URL checker Project - END ********************/
@@ -356,4 +365,8 @@ func main() {
 	for url, result := range results {
 		fmt.Println(url, result)
 	}
+
+	// Goroutines - 메인함수가 실행될때만 goroutines도 작동된다.
+	go sexyCount("nico") // 앞에 go를 붙여주면 동시에 작업처리(Goroutines)
+	sexyCount("flynn")
 }
