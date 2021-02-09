@@ -124,7 +124,8 @@ var errRequestFailed = errors.New("Request failed")
 func hitURL(url string) error {
 	fmt.Println("Checking:", url)
 	resp, err := http.Get(url)
-	if err == nil || resp.StatusCode >= 400 {
+	if err != nil || resp.StatusCode >= 400 {
+		fmt.Println(err, resp.StatusCode)
 		return errRequestFailed
 	}
 	return nil
@@ -331,6 +332,7 @@ func main() {
 	}
 
 	// URL checker Project
+	var results = make(map[string]string) // make는 초기화되지 않은 map생성
 	urls := []string{
 		"https://www.airbnb.com/",
 		"https://www.google.com/",
@@ -344,6 +346,14 @@ func main() {
 	}
 
 	for _, url := range urls {
-		hitURL(url)
+		result := "OK"
+		err := hitURL(url)
+		if err != nil {
+			result = "FAILED"
+		}
+		results[url] = result
+	}
+	for url, result := range results {
+		fmt.Println(url, result)
 	}
 }
