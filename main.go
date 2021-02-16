@@ -140,6 +140,13 @@ func sexyCount(person string) {
 	}
 }
 
+// Channels - goroutine이랑 메인함수 사이에 정보를 전달하기 위한 방법
+func isSexy(person string, c chan bool) {
+	time.Sleep(time.Second * 5)
+	fmt.Println(person)
+	c <- true
+}
+
 /******************** URL checker Project - END ********************/
 
 func multiply(a, b int) int {
@@ -369,4 +376,13 @@ func main() {
 	// Goroutines - 메인함수가 실행될때만 goroutines도 작동된다.
 	go sexyCount("nico") // 앞에 go를 붙여주면 동시에 작업처리(Goroutines)
 	sexyCount("flynn")
+
+	// Channels
+	c := make(chan bool) // Channels을 make를 이용해서 만들어줌
+	people := [2]string{"son", "park"}
+	for _, person := range people {
+		go isSexy(person, c)
+	}
+	fmt.Println(<-c)
+	fmt.Println(<-c)
 }
