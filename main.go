@@ -119,6 +119,11 @@ func (d Dictionary) Delete(word string) {
 /******************** Dictionary Project - END ********************/
 
 /********************URL checker Project********************/
+type result1 struct {
+	url    string
+	status string
+}
+
 var errRequestFailed = errors.New("Request failed")
 
 // URL CHECKER hitURL
@@ -130,6 +135,17 @@ func hitURL(url string) error {
 		return errRequestFailed
 	}
 	return nil
+}
+
+// URL Checker + Go Rountines       ch1 chan<- : send only
+func hitGoURL(url string, ch1 chan<- result1) {
+	fmt.Println("Checking:", url)
+	resp, err := http.Get(url)
+	status := "OK"
+	if err != nil || resp.StatusCode >= 400 {
+		status = "FAILED"
+	}
+	ch1 <- result1{url: url, status: status}
 }
 
 // Goroutines - 동시에 처리해주는 go함수
@@ -400,5 +416,23 @@ func main() {
 	}
 	for i := 0; i < len(group); i++ {
 		fmt.Println(<-ch)
+	}
+
+	// URL Checker + Go Rountines
+	effect := make(map[string]string)
+	ch1 := make(chan result1)
+	urlss := []string{
+		"https://www.airbnb.com/",
+		"https://www.google.com/",
+		"https://www.amazon.com/",
+		"https://www.reddit.com/",
+		"https://www.google.com/",
+		"https://www.facebook.com/",
+		"https://www.instagram.com/",
+		"https://soundcloud.com/",
+		"https://academy.nomadcoders.co/",
+	}
+	for _, url := range urlss {
+		go hitGoURL(url, ch1)
 	}
 }
