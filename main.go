@@ -147,6 +147,12 @@ func isSexy(person string, c chan bool) {
 	c <- true
 }
 
+// Channels Recap
+func isCool(person string, ch chan string) {
+	time.Sleep(time.Second * 10)
+	ch <- person + " is cool"
+}
+
 /******************** URL checker Project - END ********************/
 
 func multiply(a, b int) int {
@@ -385,4 +391,14 @@ func main() {
 	}
 	fmt.Println(<-c)
 	fmt.Println(<-c)
+
+	// Channels Recap
+	ch := make(chan string)
+	group := [5]string{"nico", "flynn", "dal", "larry", "jake"}
+	for _, person := range group {
+		go isCool(person, ch)
+	}
+	for i := 0; i < len(group); i++ {
+		fmt.Println(<-ch)
+	}
 }
