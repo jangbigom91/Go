@@ -137,9 +137,8 @@ func hitURL(url string) error {
 	return nil
 }
 
-// URL Checker + Go Rountines       ch1 chan<- : send only
+// URL Checker + Go Rountines + Fast URL Checker       ch1 chan<- : send only
 func hitGoURL(url string, ch1 chan<- result1) {
-	fmt.Println("Checking:", url)
 	resp, err := http.Get(url)
 	status := "OK"
 	if err != nil || resp.StatusCode >= 400 {
@@ -418,7 +417,7 @@ func main() {
 		fmt.Println(<-ch)
 	}
 
-	// URL Checker + Go Rountines
+	// URL Checker + Go Rountines + Fast URL Checker
 	effect := make(map[string]string)
 	ch1 := make(chan result1)
 	urlss := []string{
@@ -434,5 +433,13 @@ func main() {
 	}
 	for _, url := range urlss {
 		go hitGoURL(url, ch1)
+	}
+	for i := 0; i < len(urlss); i++ {
+		result1 := <-ch1
+		effect[result1.url] = result1.status
+	}
+
+	for urlss, status := range effect {
+		fmt.Println(urlss, status)
 	}
 }
