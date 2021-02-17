@@ -218,7 +218,8 @@ func checkCode(res *http.Response) {
 }
 
 // JOB파트 부분 추출
-func getPage(page int) {
+func getPage(page int) []extractedJob {
+	var jobs []extractedJob
 	pageURL := baseURL + "&start=" + strconv.Itoa(page*50) // strconv.Itoa -> int를 string으로 바꿔주는 go패키지
 	fmt.Println("Requesting", pageURL)
 	res, err := http.Get(pageURL)
@@ -234,27 +235,34 @@ func getPage(page int) {
 	searchCards := doc.Find(".jobsearch-SerpJobCard")
 
 	searchCards.Each(func(i int, card *goquery.Selection) {
-		id, _ := card.Attr("data-jk")
-		fmt.Println(id)
-
-		title := card.Find(".title>a").Text()
-		fmt.Println(title)
-
-		location := card.Find(".sjcl>span").Text()
-		fmt.Println(location)
-
-		salary := card.Find(".salarySnippet>.salary no-wrap>.salaryText").Text()
-		fmt.Println(salary)
-
-		summary := card.Find(".summary").Text()
-		fmt.Println(summary)
+		job := extractJob(card)
+		jobs = append(jobs, job)
 	})
+
+	return jobs
 
 }
 
-// string사이의 스페이스공간을 clean
-func cleanString(str string) string {
+// extractJob 함수
+func extractJob(card *goquery.Selection) extractedJob {
+	id, _ := card.Attr("data-jk")
+	title := cleanString(card.Find(".title>a").Text())
+	location := cleanString(card.Find(".sjcl").Text())
+	salary := cleanString(card.Find(".salaryText").Text())
+	summary := cleanString(card.Find(".summary").Text())
 
+	return extractedJob{
+		id:       id,
+		title:    title,
+		location: location,
+		salary:   salary,
+		summary:  summary,
+	}
+}
+
+// string사이의 스페이스공간을 clean, fields로 배열을 만들어주고 Join으로 두가지를 합침
+func cleanString(str string) string {
+	return strings.Join(strings.Fields(strings.TrimSpace(str)), " ")
 }
 
 /******************** JOB SCRAPPER Project - END ********************/
@@ -533,8 +541,12 @@ func main() {
 	}
 
 	// JOB SCRAPPER Project
+	var jobs []extractedJob
 	totalPages := getPages()
 	for i := 0; i < totalPages; i++ {
-		getPage(i)
+		extractedJob := getPage(i)
+		jobs = append(jobs, extractedJob...)
 	}
+
+	fmt.Println(jobs)
 }
