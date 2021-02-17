@@ -177,6 +177,14 @@ func isCool(person string, ch chan string) {
 /********************JOB SCRAPPER Project********************/
 var baseURL string = "https://kr.indeed.com/jobs?q=python&limit=50"
 
+type extractedJob struct {
+	id       string
+	title    string
+	location string
+	salary   string
+	summary  string
+}
+
 func getPages() int {
 	pages := 0
 	res, err := http.Get(baseURL)
@@ -209,9 +217,44 @@ func checkCode(res *http.Response) {
 	}
 }
 
+// JOB파트 부분 추출
 func getPage(page int) {
 	pageURL := baseURL + "&start=" + strconv.Itoa(page*50) // strconv.Itoa -> int를 string으로 바꿔주는 go패키지
 	fmt.Println("Requesting", pageURL)
+	res, err := http.Get(pageURL)
+	checkErr(err)
+	checkCode(res)
+
+	defer res.Body.Close()
+
+	// goquery 생성
+	doc, err := goquery.NewDocumentFromReader(res.Body)
+	checkErr(err)
+
+	searchCards := doc.Find(".jobsearch-SerpJobCard")
+
+	searchCards.Each(func(i int, card *goquery.Selection) {
+		id, _ := card.Attr("data-jk")
+		fmt.Println(id)
+
+		title := card.Find(".title>a").Text()
+		fmt.Println(title)
+
+		location := card.Find(".sjcl>span").Text()
+		fmt.Println(location)
+
+		salary := card.Find(".salarySnippet>.salary no-wrap>.salaryText").Text()
+		fmt.Println(salary)
+
+		summary := card.Find(".summary").Text()
+		fmt.Println(summary)
+	})
+
+}
+
+// string사이의 스페이스공간을 clean
+func cleanString(str string) string {
+
 }
 
 /******************** JOB SCRAPPER Project - END ********************/
