@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -177,6 +178,7 @@ func isCool(person string, ch chan string) {
 var baseURL string = "https://kr.indeed.com/jobs?q=python&limit=50"
 
 func getPages() int {
+	pages := 0
 	res, err := http.Get(baseURL)
 	checkErr(err)
 	checkCode(res)
@@ -187,8 +189,10 @@ func getPages() int {
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 	checkErr(err)
 
-	doc.Find(".pagination").Each()
-	return 0
+	doc.Find(".pagination").Each(func(i int, s *goquery.Selection) {
+		pages = s.Find("a").Length()
+	})
+	return pages
 }
 
 // 에러체크
@@ -203,6 +207,11 @@ func checkCode(res *http.Response) {
 	if res.StatusCode != 200 {
 		log.Fatalln("Request failed with Status:", res.StatusCode)
 	}
+}
+
+func getPage(page int) {
+	pageURL := baseURL + "&start=" + strconv.Itoa(page*50) // strconv.Itoa -> int를 string으로 바꿔주는 go패키지
+	fmt.Println("Requesting", pageURL)
 }
 
 /******************** JOB SCRAPPER Project - END ********************/
@@ -481,5 +490,8 @@ func main() {
 	}
 
 	// JOB SCRAPPER Project
-	getPages()
+	totalPages := getPages()
+	for i := 0; i < totalPages; i++ {
+		getPage(i)
+	}
 }
