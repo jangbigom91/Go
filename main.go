@@ -3,9 +3,12 @@ package main
 import (
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/PuerkitoBio/goquery"
 )
 
 // struct
@@ -169,6 +172,40 @@ func isCool(person string, ch chan string) {
 }
 
 /******************** URL checker Project - END ********************/
+
+/********************JOB SCRAPPER Project********************/
+var baseURL string = "https://kr.indeed.com/jobs?q=python&limit=50"
+
+func getPages() int {
+	res, err := http.Get(baseURL)
+	checkErr(err)
+	checkCode(res)
+
+	defer res.Body.Close()
+
+	// goquery 생성
+	doc, err := goquery.NewDocumentFromReader(res.Body)
+	checkErr(err)
+
+	doc.Find(".pagination").Each()
+	return 0
+}
+
+// 에러체크
+func checkErr(err error) {
+	if err != nil {
+		log.Fatalln(err)
+	}
+}
+
+// 코드체크
+func checkCode(res *http.Response) {
+	if res.StatusCode != 200 {
+		log.Fatalln("Request failed with Status:", res.StatusCode)
+	}
+}
+
+/******************** JOB SCRAPPER Project - END ********************/
 
 func multiply(a, b int) int {
 	return a * b
@@ -442,4 +479,7 @@ func main() {
 	for urlss, status := range effect {
 		fmt.Println(urlss, status)
 	}
+
+	// JOB SCRAPPER Project
+	getPages()
 }
