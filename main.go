@@ -592,11 +592,15 @@ func main() {
 }
 
 // WEB SERVER WITH ECHO
+const fileName string = "jobs.csv"
+
 func handleHome(c echo.Context) error {
 	return c.File("home.html")
 }
 
 func handleScrape(c echo.Context) error {
+	defer os.Remove("fileName")
 	term := strings.ToLower(scrapper.CleanString(c.FormValue("term")))
-	return nil
+	scrapper.Scrape(term)
+	return c.Attachment("fileName", "fileName")
 }
