@@ -220,7 +220,7 @@ func checkCode(res *http.Response) {
 }
 
 // JOB파트 부분 추출
-func getPage(page int) []extractedJob {
+func getPage(page int, mainC chan<- []extractedJob) {
 	var jobs []extractedJob
 	cjobs := make(chan extractedJob)
 	pageURL := baseURL + "&start=" + strconv.Itoa(page*50) // strconv.Itoa -> int를 string으로 바꿔주는 go패키지
@@ -246,7 +246,7 @@ func getPage(page int) []extractedJob {
 		jobs = append(jobs, job)
 	}
 
-	return jobs
+	mainC <- jobs
 
 }
 
@@ -568,12 +568,17 @@ func main() {
 
 	// JOB SCRAPPER Project
 	var jobs []extractedJob
+	mainC := make(chan []extractedJob)
 	totalPages := getPages()
 	for i := 0; i < totalPages; i++ {
-		extractedJob := getPage(i)
-		jobs = append(jobs, extractedJob...)
+		go getPage(i, mainC)
+
 	}
 
+	for i := 0; i < totalPages; i++ {
+		extractJobs := <-mainC
+		jobs = append(jobs, extractJobs...)
+	}
 	writeJobs(jobs)
 	fmt.Println("Done, extracted", len(jobs))
 }
