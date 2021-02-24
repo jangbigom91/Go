@@ -222,6 +222,7 @@ func checkCode(res *http.Response) {
 // JOB파트 부분 추출
 func getPage(page int) []extractedJob {
 	var jobs []extractedJob
+	cjobs := make(chan extractedJob)
 	pageURL := baseURL + "&start=" + strconv.Itoa(page*50) // strconv.Itoa -> int를 string으로 바꿔주는 go패키지
 	fmt.Println("Requesting", pageURL)
 	res, err := http.Get(pageURL)
@@ -237,9 +238,13 @@ func getPage(page int) []extractedJob {
 	searchCards := doc.Find(".jobsearch-SerpJobCard")
 
 	searchCards.Each(func(i int, card *goquery.Selection) {
-		job := extractJob(card)
-		jobs = append(jobs, job)
+		go extractJob(card, cjobs)
 	})
+
+	for i := 0; i < searchCards.Length(); i++ {
+		job := <-cjobs
+		jobs = append(jobs, job)
+	}
 
 	return jobs
 
@@ -265,14 +270,14 @@ func writeJobs(jobs []extractedJob) {
 }
 
 // extractJob 함수
-func extractJob(card *goquery.Selection) extractedJob {
+func extractJob(card *goquery.Selection, cjobs chan<- extractedJob) {
 	id, _ := card.Attr("data-jk")
 	title := cleanString(card.Find(".title>a").Text())
 	location := cleanString(card.Find(".sjcl").Text())
 	salary := cleanString(card.Find(".salaryText").Text())
 	summary := cleanString(card.Find(".summary").Text())
 
-	return extractedJob{
+	cjobs <- extractedJob{
 		id:       id,
 		title:    title,
 		location: location,
