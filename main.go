@@ -13,6 +13,7 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/jangbigom91/LEARNGO/scrapper"
+	"github.com/labstack/echo"
 )
 
 // struct
@@ -583,5 +584,19 @@ func main() {
 	writeJobs(jobs)
 	fmt.Println("Done, extracted", len(jobs))
 
-	scrapper.Scrape("term")
+	// WEB SERVER WITH ECHO
+	e := echo.New()
+	e.GET("/", handleHome)
+	e.POST("/scrape", handleScrape)
+	e.Logger.Fatal(e.Start(":1323"))
+}
+
+// WEB SERVER WITH ECHO
+func handleHome(c echo.Context) error {
+	return c.File("home.html")
+}
+
+func handleScrape(c echo.Context) error {
+	term := strings.ToLower(scrapper.CleanString(c.FormValue("term")))
+	return nil
 }
