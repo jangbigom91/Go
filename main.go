@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/jangbigom91/LEARNGO/scrapper"
 )
 
 // struct
@@ -581,4 +582,6 @@ func main() {
 	}
 	writeJobs(jobs)
 	fmt.Println("Done, extracted", len(jobs))
+
+	scrapper.Scrape("term")
 }
